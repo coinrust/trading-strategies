@@ -34,7 +34,7 @@ func GridPop(grid *[]Level) *Level {
 	return &item
 }
 
-func Shift(grid *[]Level) *Level {
+func GridShift(grid *[]Level) *Level {
 	length := len(*grid)
 	if length == 0 {
 		return nil
@@ -157,7 +157,7 @@ func (s *BasicStrategy) UpdateGrid(ob *OrderBook) {
 			return
 		}
 		log.Printf("order=%#v", order)
-		Shift(&s.Grid)
+		GridShift(&s.Grid)
 		s.StopLoss++
 	}
 }
