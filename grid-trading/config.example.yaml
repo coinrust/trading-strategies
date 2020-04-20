@@ -1,0 +1,10 @@
+exchange_id: "bybit"      # 交易市场ID
+access_key: ""            # AccessKey
+secret_key: ""            # SecretKey
+testnet: true
+symbol: "BTCUSD"
+direction: 1              # 方向: 1(UP) -1(Down)
+grid_num: 10              # 网格节点数量 10
+grid_point_amount: 1.0    # 网格节点下单量 1
+grid_point_dis: 20.0      # 网格节点间距 20
+grid_cov_dis: 50.0        # 网格节点平仓价差 50
