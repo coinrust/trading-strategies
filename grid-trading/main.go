@@ -2,8 +2,7 @@ package main
 
 import (
 	. "github.com/coinrust/crex"
-	"github.com/coinrust/crex/exchanges"
-	"github.com/spf13/viper"
+	"github.com/coinrust/crex/serve"
 	"log"
 	"time"
 )
@@ -13,15 +12,6 @@ type Level struct {
 	HoldPrice  float64
 	HoldAmount float64
 	CoverPrice float64
-}
-
-func init() {
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Panic(err)
-	}
 }
 
 func GridPop(grid *[]Level) *Level {
@@ -56,31 +46,33 @@ type GridStrategy struct {
 	StopLoss float64
 	StopWin  float64
 
-	Symbol    string
-	Direction float64 // 网格方向 up 1, down -1
+	Symbol    string  `opt:"symbol,BTUSDT"`
+	Direction float64 `opt:"direction,1"` // 网格方向 up 1, down -1
 
-	GridNum         int     // 网格节点数量 10
-	GridPointAmount float64 // 网格节点下单量 1
-	GridPointDis    float64 // 网格节点间距 20
-	GridCovDis      float64 // 网格节点平仓价差 50
+	GridNum         int     `opt:"grid_num,10"`         // 网格节点数量 10
+	GridPointAmount float64 `opt:"grid_point_amount,1"` // 网格节点下单量 1
+	GridPointDis    float64 `opt:"grid_point_dis,20"`   // 网格节点间距 20
+	GridCovDis      float64 `opt:"grid_cov_dis,50"`     // 网格节点平仓价差 50
 }
 
-func (s *GridStrategy) OnInit() {
-	s.Symbol = viper.GetString("symbol")
-	s.Direction = viper.GetFloat64("direction")
-	s.GridNum = viper.GetInt("grid_num")
-	s.GridPointAmount = viper.GetFloat64("grid_point_amount")
-	s.GridPointDis = viper.GetFloat64("grid_point_dis")
-	s.GridCovDis = viper.GetFloat64("grid_cov_dis")
+func (s *GridStrategy) OnInit() error {
+	log.Printf("Symbol: %v", s.Symbol)
+	log.Printf("Direction: %v", s.Direction)
+	log.Printf("GridNum: %v", s.GridNum)
+	log.Printf("GridPointAmount: %v", s.GridPointAmount)
+	log.Printf("GridPointDis: %v", s.GridPointDis)
+	log.Printf("GridCovDis: %v", s.GridCovDis)
+	return nil
 }
 
-func (s *GridStrategy) OnTick() {
+func (s *GridStrategy) OnTick() error {
 	ob, err := s.Exchange.GetOrderBook(s.Symbol, 1)
 	if err != nil {
 		log.Printf("%v", err)
-		return
+		return err
 	}
 	s.UpdateGrid(&ob)
+	return nil
 }
 
 func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
@@ -162,27 +154,23 @@ func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
 	}
 }
 
-func (s *GridStrategy) OnDeinit() {
-
-}
-
-func main() {
-	exchangeID := viper.GetString("exchange_id")
-	accessKey := viper.GetString("access_key")
-	secretKey := viper.GetString("secret_key")
-	testnet := viper.GetBool("testnet")
-
-	broker := exchanges.NewExchange(exchangeID,
-		ApiAccessKeyOption(accessKey),
-		ApiSecretKeyOption(secretKey),
-		ApiTestnetOption(testnet))
-
-	s := &GridStrategy{}
-	s.Setup(TradeModeLiveTrading, broker)
-
+func (s *GridStrategy) Run() error {
 	// run loop
 	for {
 		s.OnTick()
 		time.Sleep(500 * time.Millisecond)
+	}
+	return nil
+}
+
+func (s *GridStrategy) OnDeinit() error {
+	return nil
+}
+
+func main() {
+	s := &GridStrategy{}
+	err := serve.Serve(s)
+	if err != nil {
+		log.Printf("%v", err)
 	}
 }
