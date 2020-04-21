@@ -48,7 +48,7 @@ func GridShift(grid *[]Level) *Level {
 	return &item
 }
 
-type BasicStrategy struct {
+type GridStrategy struct {
 	StrategyBase
 
 	Grid []Level
@@ -65,7 +65,7 @@ type BasicStrategy struct {
 	GridCovDis      float64 // 网格节点平仓价差 50
 }
 
-func (s *BasicStrategy) OnInit() {
+func (s *GridStrategy) OnInit() {
 	s.Symbol = viper.GetString("symbol")
 	s.Direction = viper.GetFloat64("direction")
 	s.GridNum = viper.GetInt("grid_num")
@@ -74,7 +74,7 @@ func (s *BasicStrategy) OnInit() {
 	s.GridCovDis = viper.GetFloat64("grid_cov_dis")
 }
 
-func (s *BasicStrategy) OnTick() {
+func (s *GridStrategy) OnTick() {
 	ob, err := s.Exchange.GetOrderBook(s.Symbol, 1)
 	if err != nil {
 		log.Printf("%v", err)
@@ -83,7 +83,7 @@ func (s *BasicStrategy) OnTick() {
 	s.UpdateGrid(&ob)
 }
 
-func (s *BasicStrategy) UpdateGrid(ob *OrderBook) {
+func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
 	nowAskPrice, nowBidPrice := ob.AskPrice(), ob.BidPrice()
 	if len(s.Grid) == 0 ||
 		(s.Direction == 1 && nowBidPrice-s.Grid[len(s.Grid)-1].Price > s.GridCovDis) ||
@@ -162,7 +162,7 @@ func (s *BasicStrategy) UpdateGrid(ob *OrderBook) {
 	}
 }
 
-func (s *BasicStrategy) OnDeinit() {
+func (s *GridStrategy) OnDeinit() {
 
 }
 
@@ -177,7 +177,7 @@ func main() {
 		ApiSecretKeyOption(secretKey),
 		ApiTestnetOption(testnet))
 
-	s := &BasicStrategy{}
+	s := &GridStrategy{}
 	s.Setup(TradeModeLiveTrading, broker)
 
 	// run loop
