@@ -1,0 +1,14 @@
+exchanges:
+  - name: "bybit"
+    access_key: ""
+    secret_key: ""
+    testnet: true
+    websocket: false
+
+options:
+  currency: "BTC"             # 货币 BTC
+  symbol: "BTCUSD"            # 标 BTCUSD
+  stop_win: 500               # 止盈 500
+  stop_loss: 500              # 止损 500
+  first_amount: 1.0           # 单次下单量 1
+  max_gear: 20.0              # 加倍赌的次数 8
