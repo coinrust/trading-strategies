@@ -163,7 +163,7 @@ func (s *GridStrategy) Run() error {
 	return nil
 }
 
-func (s *GridStrategy) OnDeinit() error {
+func (s *GridStrategy) OnExit() error {
 	return nil
 }
 

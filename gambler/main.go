@@ -91,7 +91,7 @@ func (s *GamblerStrategy) Run() error {
 	return nil
 }
 
-func (s *GamblerStrategy) OnDeinit() error {
+func (s *GamblerStrategy) OnExit() error {
 	return nil
 }
 
