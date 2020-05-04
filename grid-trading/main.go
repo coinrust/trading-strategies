@@ -99,7 +99,7 @@ func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
 			CoverPrice: coverPrice,
 		})
 
-		var order Order
+		var order *Order
 		var err error
 		if s.Direction == 1 {
 			order, err = s.Exchange.OpenShort(s.Symbol, OrderTypeMarket, 0, s.GridPointAmount)
@@ -120,7 +120,7 @@ func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
 	if len(s.Grid) > 0 &&
 		((s.Direction == 1 && nowAskPrice < s.Grid[len(s.Grid)-1].CoverPrice) ||
 			(s.Direction == -1 && nowBidPrice > s.Grid[len(s.Grid)-1].CoverPrice)) {
-		var order Order
+		var order *Order
 		var err error
 		size := s.Grid[len(s.Grid)-1].HoldAmount
 		if s.Direction == 1 {
@@ -136,7 +136,7 @@ func (s *GridStrategy) UpdateGrid(ob *OrderBook) {
 		GridPop(&s.Grid)
 		s.StopWin++
 	} else if len(s.Grid) > s.GridNum {
-		var order Order
+		var order *Order
 		var err error
 		size := s.Grid[0].HoldAmount
 		if s.Direction == 1 {

@@ -55,7 +55,7 @@ func (s *GamblerStrategy) OnTick() (err error) {
 		return
 	}
 	if s.hold.Amount == 0 {
-		var order Order
+		var order *Order
 		order, err = s.Buy(s.FirstAmount)
 		s.hold.Amount = order.FilledAmount
 		s.hold.Price = order.AvgPrice
@@ -68,7 +68,7 @@ func (s *GamblerStrategy) OnTick() (err error) {
 		} else if ob.AskPrice() < s.hold.Price-s.StopLoss && s.gear < s.MaxGear {
 			_, err = s.Sell(s.hold.Amount)
 			amount := s.hold.Amount * 2
-			var addOrder Order
+			var addOrder *Order
 			addOrder, err = s.Buy(amount)
 			if err != nil {
 				return
@@ -95,7 +95,7 @@ func (s *GamblerStrategy) OnExit() error {
 	return nil
 }
 
-func (s *GamblerStrategy) Buy(amount float64) (order Order, err error) {
+func (s *GamblerStrategy) Buy(amount float64) (order *Order, err error) {
 	order, err = s.Exchange.OpenLong(s.Symbol,
 		OrderTypeMarket, 0, amount)
 	if err != nil {
@@ -106,7 +106,7 @@ func (s *GamblerStrategy) Buy(amount float64) (order Order, err error) {
 	return
 }
 
-func (s *GamblerStrategy) Sell(amount float64) (order Order, err error) {
+func (s *GamblerStrategy) Sell(amount float64) (order *Order, err error) {
 	order, err = s.Exchange.OpenShort(s.Symbol,
 		OrderTypeMarket, 0, amount)
 	if err != nil {
