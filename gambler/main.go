@@ -48,7 +48,7 @@ func (s *GamblerStrategy) OnInit() error {
 }
 
 func (s *GamblerStrategy) OnTick() (err error) {
-	var ob OrderBook
+	var ob *OrderBook
 	ob, err = s.Exchange.GetOrderBook(s.Symbol, 1)
 	if err != nil {
 		log.Printf("%v", err)

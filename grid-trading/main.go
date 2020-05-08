@@ -71,7 +71,7 @@ func (s *GridStrategy) OnTick() error {
 		log.Printf("%v", err)
 		return err
 	}
-	s.UpdateGrid(&ob)
+	s.UpdateGrid(ob)
 	return nil
 }
 
