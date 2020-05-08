@@ -5,6 +5,10 @@ secret_key = ""
 testnet = true
 websocket = false
 
+[log]
+path = "./app.log"
+level = "debug"
+
 [option]
 symbol = "BTCUSD"
 direction = 1              # 方向: 1(UP) -1(Down)
