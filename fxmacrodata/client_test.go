@@ -16,6 +16,24 @@ func TestBuildURL(t *testing.T) {
 	}
 }
 
+func TestForexPage(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/forex/eur/usd" {
+			t.Errorf("unexpected path %q", r.URL.Path)
+		}
+		if r.URL.RawQuery != "limit=100&offset=200" {
+			t.Errorf("unexpected query %q", r.URL.RawQuery)
+		}
+		w.Write([]byte("{}"))
+	}))
+	defer srv.Close()
+	client := NewClient("")
+	client.BaseURL = srv.URL
+	if _, err := client.ForexPage(context.Background(), "EUR", "USD", Page{Limit: 100, Offset: 200}); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestAPIKeyHeader(t *testing.T) {
 	for _, key := range []string{"test-key", ""} {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
