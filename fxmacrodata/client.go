@@ -88,12 +88,6 @@ func (c *Client) CentralBankers(ctx context.Context, currency string) ([]byte, e
 }
 
 func (c *Client) buildURL(path string, values url.Values) string {
-	if values == nil {
-		values = url.Values{}
-	}
-	if c.APIKey != "" {
-		values.Set("api_key", c.APIKey)
-	}
 	base := strings.TrimRight(c.BaseURL, "/")
 	if len(values) == 0 {
 		return base + path
@@ -109,6 +103,9 @@ func (c *Client) get(ctx context.Context, path string, values url.Values) ([]byt
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.buildURL(path, values), nil)
 	if err != nil {
 		return nil, err
+	}
+	if c.APIKey != "" {
+		req.Header.Set("X-API-Key", c.APIKey)
 	}
 	resp, err := httpClient.Do(req)
 	if err != nil {
