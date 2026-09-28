@@ -127,10 +127,6 @@ func (c *Client) PressReleasesPage(ctx context.Context, currency string, page Pa
 	return c.get(ctx, "/press-releases/"+norm(currency), page.values())
 }
 
-func (c *Client) CentralBankers(ctx context.Context, currency string) ([]byte, error) {
-	return c.get(ctx, "/central_bankers/"+norm(currency), nil)
-}
-
 func (c *Client) buildURL(path string, values url.Values) string {
 	base := strings.TrimRight(c.BaseURL, "/")
 	if len(values) == 0 {
